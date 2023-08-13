@@ -69,23 +69,35 @@ const form = document.getElementById('input-task');
 const task = document.getElementById("task-value");
 let taskCount = localStorage.length
 
-form.addEventListener('submit', ()=>{
+form.addEventListener('submit', () => {
     console.log(taskCount)
     taskCount++
     const inputtask = task.value;
     localStorage.setItem(taskCount, inputtask)
-    console.log(taskCount) 
+    console.log(taskCount)
 })
+
+function taskDone(checkbox) {
+    const textElement = checkbox.nextElementSibling;
+
+    if (checkbox.checked) {
+        textElement.style.textDecoration = 'line-through'
+        console.log("checked")
+    } else {
+        textElement.style.textDecoration = 'none'
+        console.log("Unchecked")
+    }
+}
 
 const taskContainer = document.getElementById('task-container')
 function displayTask() {
     for (let index = 1; index <= localStorage.length; index++) {
         let label = document.createElement('label')
         label.classList.add('gap-3')
+        label.classList.add('task-label')
         label.innerHTML = `<div class="d-flex gap-5 py-2 ">
-                            <input class="custom-checkbox my-3" type="checkbox">
-
-                                <h5>${localStorage.getItem(index)}</h5>
+                            <input class="custom-checkbox my-3" id="check" type="checkbox" onclick='taskDone(this)'>
+                                <h5 >${localStorage.getItem(index)}</h5>
 
                                 <span class="pt-1 "></span>
                             </div>
@@ -94,11 +106,27 @@ function displayTask() {
                                  <button class="dropdown-button">&#8942;</button>
                             <div class="dropdown-content p-3">
                                 <button class="dropdown-it py-1 px-4 col-12 ">Pin</button>
-                                <button class="dropdown-it py-1 px-4 col-12 ">Delete</button>
+                                <button class="dropdown-it py-1 px-4 col-12 " onclick="deleteTask(this)">Delete</button>
                                 </div>
                              </div>`
         taskContainer.appendChild(label)
     }
 }
+
+function deleteTask(button){
+    const delete_Label = button.closest(".task-label")
+    const textElement = delete_Label.querySelector('h5');
+    const text = textElement.textContent;
+    console.log(delete_Label);
+    console.log(textElement);
+    console.log(text)
+    for (let index = 1; index < localStorage.length; index++) {
+        if (localStorage.getItem(index) == text) {
+            localStorage.removeItem(index)
+            break;
+        }
+    }
+}
+
 displayTask();
-    
+
